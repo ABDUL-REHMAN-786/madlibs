@@ -634,218 +634,18 @@
 
 
 
-import streamlit as st
-import random
-import time
-
-# Custom CSS for colorful UI and footer
-st.markdown("""
-    <style>
-        .main {
-            background-color: #f8f9fa;
-            color: #333;
-        }
-        .sidebar .sidebar-content {
-            background-color: #4CAF50;
-            color: white;
-        }
-        h1, h2, h3 {
-            color: #ff6347;  /* Tomato */
-        }
-        .stButton>button {
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 10px;
-            padding: 10px;
-            font-size: 16px;
-        }
-        .stButton>button:hover {
-            background-color: #45a049;
-        }
-        .footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: #2f2f2f;
-            color: white;
-            text-align: center;
-            padding: 10px;
-        }
-        .footer a {
-            color: #ff6347;
-        }
-        .footer a:hover {
-            color: #ff4500;
-        }
-    </style>
-    """, unsafe_allow_html=True)
-
-# List of categories with options for users to select
-adjectives = ["funny", "excited", "lazy", "brave", "strange", "silly", "beautiful", "brilliant"]
-nouns = ["dog", "robot", "city", "banana", "tree", "alien", "car", "pirate"]
-verbs = ["jump", "run", "dance", "play", "sing", "swim", "travel", "explore"]
-places = ["mountain", "forest", "desert", "ocean", "castle", "cave", "village"]
-emotions = ["happy", "angry", "excited", "nervous", "scared", "sad", "confused"]
-creatures = ["dragon", "troll", "goblin", "vampire", "werewolf", "fairy", "griffin"]
-plural_nouns = ["trees", "bottles", "rocks", "birds", "books", "apples", "dollars"]
-
-# Function for Mad Libs with user input for word selection
-def mad_libs_with_user_input():
-    st.title("Mad Libs Game (With Word Selection)")
-
-    # Select words from each category
-    adjective = st.selectbox("Choose an adjective:", adjectives, key="adjective")
-    noun = st.selectbox("Choose a noun:", nouns, key="noun")
-    verb = st.selectbox("Choose a verb:", verbs, key="verb")
-    adjective2 = st.selectbox("Choose another adjective:", adjectives, key="adjective2")
-    noun2 = st.selectbox("Choose another noun:", nouns, key="noun2")
-    verb2 = st.selectbox("Choose another verb:", verbs, key="verb2")
-    place = st.selectbox("Choose a place:", places, key="place")
-    emotion = st.selectbox("Choose an emotion:", emotions, key="emotion")
-    creature = st.selectbox("Choose a creature:", creatures, key="creature")
-    plural_noun = st.selectbox("Choose a plural noun:", plural_nouns, key="plural_noun")
-
-    # Long story template with placeholders
-    story = f"""
-    The Great Adventure
-    ---------------------
-    A young adventurer, full of excitement, set off on a quest to find the {adjective} {noun} hidden deep in the {place}. 
-    Along the way, the adventurer met a {adjective2} {noun2} who was {verb} and {emotion}. 
-    Together, they faced many challenges, including crossing a {adjective} river full of {noun}s, and navigating a {adjective2} forest filled with {plural_noun}. 
-    After a long journey, they finally reached the {noun}, only to discover that it was guarded by a {adjective} {creature}. 
-    The adventurer and the creature had an epic battle, and only one would come out victorious.
-    """
-
-    st.write(story)
-
-    # Option to save the generated story as a text file
-    save_button = st.download_button(
-        label="Download your story",
-        data=story,
-        file_name="mad_libs_story.txt",
-        mime="text/plain"
-    )
-
-# Function for random Mad Libs with predefined word categories
-def mad_libs_with_random_words():
-    st.title("Random Mad Libs Game")
-
-    # Randomly select words from the predefined lists
-    adjective = random.choice(adjectives)
-    noun = random.choice(nouns)
-    verb = random.choice(verbs)
-    adjective2 = random.choice(adjectives)
-    noun2 = random.choice(nouns)
-    verb2 = random.choice(verbs)
-    place = random.choice(places)
-    emotion = random.choice(emotions)
-    creature = random.choice(creatures)
-    plural_noun = random.choice(plural_nouns)
-
-    # Random story template with placeholders filled in
-    story = f"""
-    The Great Adventure
-    ---------------------
-    A young adventurer, full of excitement, set off on a quest to find the {adjective} {noun} hidden deep in the {place}. 
-    Along the way, the adventurer met a {adjective2} {noun2} who was {verb} and {emotion}. 
-    Together, they faced many challenges, including crossing a {adjective} river full of {noun}s, and navigating a {adjective2} forest filled with {plural_noun}. 
-    After a long journey, they finally reached the {noun}, only to discover that it was guarded by a {adjective} {creature}. 
-    The adventurer and the creature had an epic battle, and only one would come out victorious.
-    """
-
-    st.write(story)
-
-    # Option to save the random story as a text file
-    save_button = st.download_button(
-        label="Download your random story",
-        data=story,
-        file_name="random_mad_libs_story.txt",
-        mime="text/plain"
-    )
-
-# Function for handling user profile and preferences
-def user_profile():
-    st.sidebar.header("User Profile")
-    name = st.sidebar.text_input("Enter your name:")
-    favorite_template = st.sidebar.selectbox("Pick your favorite Mad Libs template:", ["A Day at the Park", "Magical Adventure", "Wild Journey"])
     
-    if st.sidebar.button("Save Profile"):
-        st.sidebar.write(f"Profile saved! Welcome back, {name}. Your favorite template is: {favorite_template}")
-
-# Function to add a timer challenge to the Mad Libs game
-def timer_challenge():
-    st.sidebar.header("Timer Challenge")
-    timer = st.sidebar.slider("Set your timer (in seconds):", 10, 60, 30)
-    
-    st.sidebar.write(f"You have {timer} seconds to complete the Mad Libs game!")
-    
-    start_button = st.sidebar.button("Start Timer")
-    if start_button:
-        start_time = time.time()
-        while True:
-            elapsed_time = time.time() - start_time
-            if elapsed_time > timer:
-                st.sidebar.write("Time's up! Please submit your Mad Libs answers.")
-                break
-
-# Main function to allow the user to choose between manual or random Mad Libs
-def choose_story_template():
-    st.title("Welcome to Mad Libs Game!")
-    
-    # Display user profile
-    user_profile()
-
-    # Timer challenge
-    timer_challenge()
-
-    # Choose story template
-    choice = st.radio("Choose your Mad Libs game mode:", 
-                      ("Mad Libs with Word Selection (Choose words)", 
-                       "Random Mad Libs (Random words from a list)"))
-
-    if choice == "Mad Libs with Word Selection (Choose words)":
-        mad_libs_with_user_input()  # Run Mad Libs with user input
-    elif choice == "Random Mad Libs (Random words from a list)":
-        mad_libs_with_random_words()  # Run random Mad Libs with predefined words
-
-# Footer for developer info
-def footer():
-    st.markdown("""
-        <div class="footer">
-            <p>Developed by <a href="https://www.linkedin.com/in/abdul-rehman-xyz">Abdul Rehman</a></p>
-        </div>
-    """, unsafe_allow_html=True)
-
-# Main execution
-if __name__ == "__main__":
-    choose_story_template()
-    footer()
-  <div class="footer">
-#             <p>Developed by <a href="https://www.linkedin.com/in/abdul-rehman-xyz">Abdul Rehman</a></p>
-#         </div>
-#     """, unsafe_allow_html=True)
-
-# # Main execution
-# if __name__ == "__main__":
-#     choose_story_template()
-#     footer()
-
-
-
-
-
 
 
 import streamlit as st
 import random
-import time
-import openai  # OpenAI API for AI-generated stories
+import textwrap
+import openai  # For AI-powered random story generation
 
-# OpenAI API Key (Set via Streamlit Secrets)
+# OpenAI API Key (Replace with your own if using OpenAI)
 OPENAI_API_KEY = "AIzaSyDcW0nwSWjM4YI0NtxVLxtHJnrAW6jPp2U"
-openai.api_key = OPENAI_API_KEY
 
-# Custom CSS for UI Enhancements
+# Custom CSS for a better UI
 st.markdown("""
     <style>
         .main {
@@ -885,21 +685,22 @@ st.markdown("""
             color: #ff4500;
         }
     </style>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
-# Word Categories for Mad Libs
-adjectives = ["funny", "excited", "lazy", "brave", "silly", "beautiful"]
-nouns = ["dog", "robot", "city", "banana", "tree", "pirate"]
+# Categories for word selection
+adjectives = ["funny", "excited", "lazy", "brave", "strange", "silly", "beautiful"]
+nouns = ["dog", "robot", "city", "banana", "tree", "alien", "car"]
 verbs = ["jump", "run", "dance", "play", "sing", "swim"]
 places = ["mountain", "forest", "desert", "ocean", "castle"]
 emotions = ["happy", "angry", "excited", "nervous", "scared"]
-creatures = ["dragon", "troll", "goblin", "vampire", "fairy"]
-plural_nouns = ["trees", "bottles", "rocks", "birds", "books"]
+creatures = ["dragon", "troll", "goblin", "vampire"]
+plural_nouns = ["trees", "bottles", "rocks", "birds"]
 
-# Function for Mad Libs with user input
+# Function to generate a Mad Libs story with user input
 def mad_libs_with_user_input():
-    st.title("📖 Mad Libs Game (Choose Words)")
+    st.title("Mad Libs Game (With Word Selection)")
 
+    # User selects words from dropdowns
     adjective = st.selectbox("Choose an adjective:", adjectives)
     noun = st.selectbox("Choose a noun:", nouns)
     verb = st.selectbox("Choose a verb:", verbs)
@@ -908,21 +709,25 @@ def mad_libs_with_user_input():
     creature = st.selectbox("Choose a creature:", creatures)
     plural_noun = st.selectbox("Choose a plural noun:", plural_nouns)
 
+    # Generate story with user-selected words
     story = f"""
-    The Great Adventure
+    **The Great Adventure**
     ---------------------
-    A {adjective} {noun} went on a journey to the {place}.
-    Along the way, they felt very {emotion} and met a {creature}.
-    They had to {verb} past a forest filled with {plural_noun} before reaching their destination.
+    A young adventurer set off on a quest to find the {adjective} {noun} hidden deep in the {place}.
+    Along the way, they met a {emotion} traveler who was {verb}. 
+    Together, they faced a {adjective} challenge, encountering a {creature} and escaping through a field of {plural_noun}.
     """
 
     st.write(story)
-    st.download_button("Download Story", story, "mad_libs_story.txt", "text/plain")
 
-# Function for Random Mad Libs
+    # Option to download the story
+    st.download_button("Download Your Story", data=story, file_name="mad_libs_story.txt", mime="text/plain")
+
+# Function to generate a completely random Mad Libs story
 def mad_libs_with_random_words():
-    st.title("🎲 Random Mad Libs Game")
+    st.title("Random Mad Libs Game")
 
+    # Randomly select words
     adjective = random.choice(adjectives)
     noun = random.choice(nouns)
     verb = random.choice(verbs)
@@ -931,99 +736,80 @@ def mad_libs_with_random_words():
     creature = random.choice(creatures)
     plural_noun = random.choice(plural_nouns)
 
+    # Generate random story
     story = f"""
-    The Great Adventure
+    **The Great Adventure**
     ---------------------
-    A {adjective} {noun} went on a journey to the {place}.
-    Along the way, they felt very {emotion} and met a {creature}.
-    They had to {verb} past a forest filled with {plural_noun} before reaching their destination.
+    A young adventurer set off on a quest to find the {adjective} {noun} hidden deep in the {place}.
+    Along the way, they met a {emotion} traveler who was {verb}. 
+    Together, they faced a {adjective} challenge, encountering a {creature} and escaping through a field of {plural_noun}.
     """
 
     st.write(story)
-    st.download_button("Download Random Story", story, "random_mad_libs_story.txt", "text/plain")
 
-# AI Story Generator Function
-def generate_ai_story(genre, custom_prompt, length):
-    prompt = f"Write a {length.lower()} {genre.lower()} story. {custom_prompt}"
+    # Option to download the random story
+    st.download_button("Download Your Random Story", data=story, file_name="random_mad_libs_story.txt", mime="text/plain")
 
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[{"role": "user", "content": prompt}],
-        max_tokens=500 if length == "Long" else 300 if length == "Medium" else 150
-    )
-    
-    return response["choices"][0]["message"]["content"]
-
-# Function to display AI-generated story with user input
-def ai_story_generator():
-    st.title("✨ AI-Powered Story Generator")
-
-    genre = st.selectbox("Choose a story genre:", ["Adventure", "Horror", "Fantasy", "Sci-Fi", "Comedy"])
-    custom_prompt = st.text_area("Describe your story idea (or leave blank for AI to decide):", "")
-    length = st.radio("Choose story length:", ["Short", "Medium", "Long"])
+# Function to generate a story using AI (OpenAI API or alternative)
+def ai_generated_story():
+    st.title("AI-Powered Random Story Generator")
 
     if st.button("Generate AI Story"):
-        with st.spinner(f"Generating a {length.lower()} {genre} story..."):
-            story = generate_ai_story(genre, custom_prompt, length)
-            st.write(story)
+        with st.spinner("Generating a magical story..."):
+            try:
+                # OpenAI API call for story generation
+                openai.api_key = OPENAI_API_KEY
+                response = openai.ChatCompletion.create(
+                    model="gpt-4",
+                    messages=[{"role": "system", "content": "Generate a fun, random Mad Libs-style story with adventure and humor."}],
+                    max_tokens=150
+                )
+                story = response["choices"][0]["message"]["content"]
+                st.write(story)
 
-            # Download option
-            st.download_button("Download Story", story, f"{genre.lower()}_story.txt", "text/plain")
+                # Download option
+                st.download_button("Download AI Story", data=story, file_name="ai_mad_libs_story.txt", mime="text/plain")
 
-# User Profile
+            except Exception as e:
+                st.error("Error generating story. Please check your API key or use a free alternative like Hugging Face.")
+
+# Function to display user profile settings
 def user_profile():
-    st.sidebar.header("👤 User Profile")
+    st.sidebar.header("User Profile")
     name = st.sidebar.text_input("Enter your name:")
-    favorite_template = st.sidebar.selectbox("Favorite Mad Libs template:", ["A Day at the Park", "Magical Adventure", "Wild Journey"])
+    favorite_template = st.sidebar.selectbox("Pick your favorite Mad Libs template:", ["Adventure", "Fantasy", "Sci-Fi"])
 
     if st.sidebar.button("Save Profile"):
-        st.sidebar.write(f"Profile saved! Welcome, {name}. Your favorite template is: {favorite_template}")
+        st.sidebar.write(f"Profile saved! Welcome back, {name}. Your favorite template is: {favorite_template}")
 
-# Timer Challenge Mode
-def timer_challenge():
-    st.sidebar.header("⏳ Timer Challenge")
-    timer = st.sidebar.slider("Set your timer (seconds):", 10, 60, 30)
-
-    if st.sidebar.button("Start Timer"):
-        start_time = time.time()
-        while True:
-            elapsed_time = time.time() - start_time
-            if elapsed_time > timer:
-                st.sidebar.write("Time's up! Submit your answers.")
-                break
-
-# Main function to choose between modes
-def choose_story_template():
-    st.title("🎭 Welcome to Mad Libs & AI Story Generator!")
-
-    # Display user profile
-    user_profile()
-
-    # Timer challenge
-    timer_challenge()
-
-    # Game mode selection
-    choice = st.radio("Choose your mode:", 
-                      ("Mad Libs (Choose Words)", "Mad Libs (Random)", "AI-Generated Story"))
-
-    if choice == "Mad Libs (Choose Words)":
-        mad_libs_with_user_input()
-    elif choice == "Mad Libs (Random)":
-        mad_libs_with_random_words()
-    elif choice == "AI-Generated Story":
-        ai_story_generator()
-
-# Footer
+# Function to add a footer
 def footer():
-    st.markdown("""
+    footer_html = textwrap.dedent("""
         <div class="footer">
             <p>Developed by <a href="https://www.linkedin.com/in/abdul-rehman-xyz">Abdul Rehman</a></p>
         </div>
-    """, unsafe_allow_html=True)
+    """)
+    st.markdown(footer_html, unsafe_allow_html=True)
+
+# Main function to choose a game mode
+def choose_story_template():
+    st.title("🎭 Welcome to the Mad Libs Game!")
+
+    # User profile settings
+    user_profile()
+
+    # Choose game mode
+    choice = st.radio("Choose a game mode:", 
+                      ("Mad Libs (Choose Words)", "Random Mad Libs (Auto)", "AI-Powered Story"))
+
+    if choice == "Mad Libs (Choose Words)":
+        mad_libs_with_user_input()
+    elif choice == "Random Mad Libs (Auto)":
+        mad_libs_with_random_words()
+    elif choice == "AI-Powered Story":
+        ai_generated_story()
 
 # Run the app
 if __name__ == "__main__":
     choose_story_template()
     footer()
-
-
