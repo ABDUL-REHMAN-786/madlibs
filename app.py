@@ -612,32 +612,7 @@
 # # Footer for developer info
 # def footer():
 #     st.markdown("""
-#         <div class="footer">
-#             <p>Developed by <a href="https://www.linkedin.com/in/abdul-rehman-xyz">Abdul Rehman</a></p>
-#         </div>
-#     """, unsafe_allow_html=True)
-
-# # Main execution
-# if __name__ == "__main__":
-#     choose_story_template()
-#     footer()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#       
 
 
 
@@ -845,4 +820,210 @@ def footer():
 if __name__ == "__main__":
     choose_story_template()
     footer()
+  <div class="footer">
+#             <p>Developed by <a href="https://www.linkedin.com/in/abdul-rehman-xyz">Abdul Rehman</a></p>
+#         </div>
+#     """, unsafe_allow_html=True)
+
+# # Main execution
+# if __name__ == "__main__":
+#     choose_story_template()
+#     footer()
+
+
+
+
+
+
+
+import streamlit as st
+import random
+import time
+import openai  # OpenAI API for AI-generated stories
+
+# OpenAI API Key (Set via Streamlit Secrets)
+OPENAI_API_KEY = "AIzaSyDcW0nwSWjM4YI0NtxVLxtHJnrAW6jPp2U"
+openai.api_key = OPENAI_API_KEY
+
+# Custom CSS for UI Enhancements
+st.markdown("""
+    <style>
+        .main {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .sidebar .sidebar-content {
+            background-color: #4CAF50;
+            color: white;
+        }
+        h1, h2, h3 {
+            color: #ff6347;
+        }
+        .stButton>button {
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .stButton>button:hover {
+            background-color: #45a049;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #2f2f2f;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+        .footer a {
+            color: #ff6347;
+        }
+        .footer a:hover {
+            color: #ff4500;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+# Word Categories for Mad Libs
+adjectives = ["funny", "excited", "lazy", "brave", "silly", "beautiful"]
+nouns = ["dog", "robot", "city", "banana", "tree", "pirate"]
+verbs = ["jump", "run", "dance", "play", "sing", "swim"]
+places = ["mountain", "forest", "desert", "ocean", "castle"]
+emotions = ["happy", "angry", "excited", "nervous", "scared"]
+creatures = ["dragon", "troll", "goblin", "vampire", "fairy"]
+plural_nouns = ["trees", "bottles", "rocks", "birds", "books"]
+
+# Function for Mad Libs with user input
+def mad_libs_with_user_input():
+    st.title("📖 Mad Libs Game (Choose Words)")
+
+    adjective = st.selectbox("Choose an adjective:", adjectives)
+    noun = st.selectbox("Choose a noun:", nouns)
+    verb = st.selectbox("Choose a verb:", verbs)
+    place = st.selectbox("Choose a place:", places)
+    emotion = st.selectbox("Choose an emotion:", emotions)
+    creature = st.selectbox("Choose a creature:", creatures)
+    plural_noun = st.selectbox("Choose a plural noun:", plural_nouns)
+
+    story = f"""
+    The Great Adventure
+    ---------------------
+    A {adjective} {noun} went on a journey to the {place}.
+    Along the way, they felt very {emotion} and met a {creature}.
+    They had to {verb} past a forest filled with {plural_noun} before reaching their destination.
+    """
+
+    st.write(story)
+    st.download_button("Download Story", story, "mad_libs_story.txt", "text/plain")
+
+# Function for Random Mad Libs
+def mad_libs_with_random_words():
+    st.title("🎲 Random Mad Libs Game")
+
+    adjective = random.choice(adjectives)
+    noun = random.choice(nouns)
+    verb = random.choice(verbs)
+    place = random.choice(places)
+    emotion = random.choice(emotions)
+    creature = random.choice(creatures)
+    plural_noun = random.choice(plural_nouns)
+
+    story = f"""
+    The Great Adventure
+    ---------------------
+    A {adjective} {noun} went on a journey to the {place}.
+    Along the way, they felt very {emotion} and met a {creature}.
+    They had to {verb} past a forest filled with {plural_noun} before reaching their destination.
+    """
+
+    st.write(story)
+    st.download_button("Download Random Story", story, "random_mad_libs_story.txt", "text/plain")
+
+# AI Story Generator Function
+def generate_ai_story(genre, custom_prompt, length):
+    prompt = f"Write a {length.lower()} {genre.lower()} story. {custom_prompt}"
+
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=500 if length == "Long" else 300 if length == "Medium" else 150
+    )
+    
+    return response["choices"][0]["message"]["content"]
+
+# Function to display AI-generated story with user input
+def ai_story_generator():
+    st.title("✨ AI-Powered Story Generator")
+
+    genre = st.selectbox("Choose a story genre:", ["Adventure", "Horror", "Fantasy", "Sci-Fi", "Comedy"])
+    custom_prompt = st.text_area("Describe your story idea (or leave blank for AI to decide):", "")
+    length = st.radio("Choose story length:", ["Short", "Medium", "Long"])
+
+    if st.button("Generate AI Story"):
+        with st.spinner(f"Generating a {length.lower()} {genre} story..."):
+            story = generate_ai_story(genre, custom_prompt, length)
+            st.write(story)
+
+            # Download option
+            st.download_button("Download Story", story, f"{genre.lower()}_story.txt", "text/plain")
+
+# User Profile
+def user_profile():
+    st.sidebar.header("👤 User Profile")
+    name = st.sidebar.text_input("Enter your name:")
+    favorite_template = st.sidebar.selectbox("Favorite Mad Libs template:", ["A Day at the Park", "Magical Adventure", "Wild Journey"])
+
+    if st.sidebar.button("Save Profile"):
+        st.sidebar.write(f"Profile saved! Welcome, {name}. Your favorite template is: {favorite_template}")
+
+# Timer Challenge Mode
+def timer_challenge():
+    st.sidebar.header("⏳ Timer Challenge")
+    timer = st.sidebar.slider("Set your timer (seconds):", 10, 60, 30)
+
+    if st.sidebar.button("Start Timer"):
+        start_time = time.time()
+        while True:
+            elapsed_time = time.time() - start_time
+            if elapsed_time > timer:
+                st.sidebar.write("Time's up! Submit your answers.")
+                break
+
+# Main function to choose between modes
+def choose_story_template():
+    st.title("🎭 Welcome to Mad Libs & AI Story Generator!")
+
+    # Display user profile
+    user_profile()
+
+    # Timer challenge
+    timer_challenge()
+
+    # Game mode selection
+    choice = st.radio("Choose your mode:", 
+                      ("Mad Libs (Choose Words)", "Mad Libs (Random)", "AI-Generated Story"))
+
+    if choice == "Mad Libs (Choose Words)":
+        mad_libs_with_user_input()
+    elif choice == "Mad Libs (Random)":
+        mad_libs_with_random_words()
+    elif choice == "AI-Generated Story":
+        ai_story_generator()
+
+# Footer
+def footer():
+    st.markdown("""
+        <div class="footer">
+            <p>Developed by <a href="https://www.linkedin.com/in/abdul-rehman-xyz">Abdul Rehman</a></p>
+        </div>
+    """, unsafe_allow_html=True)
+
+# Run the app
+if __name__ == "__main__":
+    choose_story_template()
+    footer()
+
 
