@@ -636,16 +636,12 @@
 
     
 
-
 import streamlit as st
 import random
 import textwrap
-import openai  # For AI-powered random story generation
+import requests  # For AI-powered story generation
 
-# OpenAI API Key (Replace with your own if using OpenAI)
-OPENAI_API_KEY = "AIzaSyDcW0nwSWjM4YI0NtxVLxtHJnrAW6jPp2U"
-
-# Custom CSS for a better UI
+# Custom CSS for better UI
 st.markdown("""
     <style>
         .main {
@@ -687,7 +683,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Categories for word selection
+# Word categories for Mad Libs
 adjectives = ["funny", "excited", "lazy", "brave", "strange", "silly", "beautiful"]
 nouns = ["dog", "robot", "city", "banana", "tree", "alien", "car"]
 verbs = ["jump", "run", "dance", "play", "sing", "swim"]
@@ -696,7 +692,7 @@ emotions = ["happy", "angry", "excited", "nervous", "scared"]
 creatures = ["dragon", "troll", "goblin", "vampire"]
 plural_nouns = ["trees", "bottles", "rocks", "birds"]
 
-# Function to generate a Mad Libs story with user input
+# Function for Mad Libs with user-selected words
 def mad_libs_with_user_input():
     st.title("Mad Libs Game (With Word Selection)")
 
@@ -709,7 +705,7 @@ def mad_libs_with_user_input():
     creature = st.selectbox("Choose a creature:", creatures)
     plural_noun = st.selectbox("Choose a plural noun:", plural_nouns)
 
-    # Generate story with user-selected words
+    # Generate story
     story = f"""
     **The Great Adventure**
     ---------------------
@@ -719,11 +715,9 @@ def mad_libs_with_user_input():
     """
 
     st.write(story)
-
-    # Option to download the story
     st.download_button("Download Your Story", data=story, file_name="mad_libs_story.txt", mime="text/plain")
 
-# Function to generate a completely random Mad Libs story
+# Function for a randomly generated Mad Libs story
 def mad_libs_with_random_words():
     st.title("Random Mad Libs Game")
 
@@ -746,34 +740,30 @@ def mad_libs_with_random_words():
     """
 
     st.write(story)
+    st.download_button("Download Random Story", data=story, file_name="random_mad_libs_story.txt", mime="text/plain")
 
-    # Option to download the random story
-    st.download_button("Download Your Random Story", data=story, file_name="random_mad_libs_story.txt", mime="text/plain")
-
-# Function to generate a story using AI (OpenAI API or alternative)
+# AI-powered story generator (uses Hugging Face API)
 def ai_generated_story():
     st.title("AI-Powered Random Story Generator")
 
     if st.button("Generate AI Story"):
         with st.spinner("Generating a magical story..."):
             try:
-                # OpenAI API call for story generation
-                openai.api_key = OPENAI_API_KEY
-                response = openai.ChatCompletion.create(
-                    model="gpt-4",
-                    messages=[{"role": "system", "content": "Generate a fun, random Mad Libs-style story with adventure and humor."}],
-                    max_tokens=150
+                # Call Hugging Face API for AI-generated story
+                response = requests.post(
+                    "https://api-inference.huggingface.co/models/facebook/blenderbot-3B",
+                    headers={"Authorization": "Bearer YOUR_HUGGING_FACE_API_KEY"},
+                    json={"inputs": "Generate a fun and adventurous Mad Libs story with humor."}
                 )
-                story = response["choices"][0]["message"]["content"]
+                story = response.json().get("generated_text", "Sorry, no story was generated.")
+                
                 st.write(story)
-
-                # Download option
                 st.download_button("Download AI Story", data=story, file_name="ai_mad_libs_story.txt", mime="text/plain")
 
             except Exception as e:
-                st.error("Error generating story. Please check your API key or use a free alternative like Hugging Face.")
+                st.error("Error generating story. Please check your API key or try again later.")
 
-# Function to display user profile settings
+# User profile settings in the sidebar
 def user_profile():
     st.sidebar.header("User Profile")
     name = st.sidebar.text_input("Enter your name:")
@@ -782,7 +772,7 @@ def user_profile():
     if st.sidebar.button("Save Profile"):
         st.sidebar.write(f"Profile saved! Welcome back, {name}. Your favorite template is: {favorite_template}")
 
-# Function to add a footer
+# Footer for developer info
 def footer():
     footer_html = textwrap.dedent("""
         <div class="footer">
@@ -791,7 +781,7 @@ def footer():
     """)
     st.markdown(footer_html, unsafe_allow_html=True)
 
-# Main function to choose a game mode
+# Main function to choose game mode
 def choose_story_template():
     st.title("🎭 Welcome to the Mad Libs Game!")
 
