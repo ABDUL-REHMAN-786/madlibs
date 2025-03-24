@@ -434,8 +434,6 @@
 
 
 
-
-
 import streamlit as st
 import random
 import time
@@ -528,6 +526,43 @@ def mad_libs_with_user_input():
             file_name="mad_libs_story.txt",
             mime="text/plain"
         )
+
+# Function for random Mad Libs with predefined word categories
+def mad_libs_with_random_words():
+    st.title("Random Mad Libs Game")
+
+    # Randomly select words from the predefined lists
+    adjective = random.choice(adjectives)
+    noun = random.choice(nouns)
+    verb = random.choice(verbs)
+    adjective2 = random.choice(adjectives)
+    noun2 = random.choice(nouns)
+    verb2 = random.choice(verbs)
+    place = random.choice(places)
+    emotion = random.choice(emotions)
+    creature = random.choice(creatures)
+    plural_noun = random.choice(plural_nouns)
+
+    # Random story template with placeholders filled in
+    story = f"""
+    The Great Adventure
+    ---------------------
+    A young adventurer, full of excitement, set off on a quest to find the {adjective} {noun} hidden deep in the {place}. 
+    Along the way, the adventurer met a {adjective2} {noun2} who was {verb} and {emotion}. 
+    Together, they faced many challenges, including crossing a {adjective} river full of {noun}s, and navigating a {adjective2} forest filled with {plural_noun}. 
+    After a long journey, they finally reached the {noun}, only to discover that it was guarded by a {adjective} {creature}. 
+    The adventurer and the creature had an epic battle, and only one would come out victorious.
+    """
+
+    st.write(story)
+
+    # Option to save the random story as a text file
+    save_button = st.download_button(
+        label="Download your random story",
+        data=story,
+        file_name="random_mad_libs_story.txt",
+        mime="text/plain"
+    )
 
 # Function for handling user profile and preferences
 def user_profile():
